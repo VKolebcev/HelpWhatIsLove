@@ -40,6 +40,7 @@ app.get("/feed", vjmServer.jwtProtector, function(request, response) {
 });
 
 app.get("/myphoto", vjmServer.jwtProtector, function(request, response) {
+    console.log(request.query.user);
     database.collection("uploads").find( { user: request.user.username })
     .sort({ date: -1 })
     .limit(10)
@@ -49,10 +50,10 @@ app.get("/myphoto", vjmServer.jwtProtector, function(request, response) {
 });
 
 app.get("/delete", vjmServer.jwtProtector, function(request, response) {
-    console.log(request);
-    database.collection("uploads").deleteOne( { image: request }, function(err, obj) {
+    database.collection("uploads").deleteOne( { image: request.query.photo }, function(err, obj) {
     if (err) throw err;
-  });
+    });
+    response.sendStatus(200);
 });
 
 mongoClient.connect(mongoUrl, function(err, db) {

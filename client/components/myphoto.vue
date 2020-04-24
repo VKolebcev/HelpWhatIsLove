@@ -40,6 +40,7 @@
                     <div class="panel-heading">
                         <div class="photo__header">
                             <span class="panel-title">{{ photo.user }}</span>
+                            <span class="panel-title">{{ photo.date.substring(0,10) }}</span>
                             <span class="glyphicon glyphicon-user"></span>
                         </div>
                     </div>
@@ -47,8 +48,7 @@
                         <img :src="getPic($index)" v-bind:alt="pic">
                     </div>
                     <div class="panel-footer">
-                        <span class="panel-title">{{ photo.date.substring(0,10) }}</span>
-                        <a class="del" v-on:click="$emit('deletePhoto($index)')">Удалить</a>
+                        <button type="button" class="btn btn-default btn-block" v-on:click="deletePhoto($index)">Удалить</button>
                     </div>
                 </div>
             </div>
@@ -69,23 +69,24 @@
                     this.photos = response.body;
                 });
             },
-        components: {
-            navigation: require("./navigation.vue"),
-            test: require("./test.vue")
-        },
-        methods: {
-            getPic: function(index) {
-                return '/uploads/' + this.photos[index].image;
-                }
+            components: {
+                navigation: require("./navigation.vue"),
+                test: require("./test.vue")
             },
-            deletePhoto: function() {
-                console.log(index);
-                this.$http.get("/delete", this.photos[index].image, { bearer: true })
-                .then(function(response) {
-                    this.$router.push("/myphoto");
-                }).catch(function(response) {
-                    console.log(response);
-                });
-            }
+            methods: {
+                getPic: function(index) {
+                    return '/uploads/' + this.photos[index].image;
+                    },
+                deletePhoto: function(index) {
+                    let data = this.photos[index].image;
+                    console.log(data);
+                    this.$http.get("/delete?photo="+data, { bearer: true })
+                    .then(function(response) {
+                        this.$router.push("/myphoto");
+                    }).catch(function(response) {
+                        console.log("Ошибка при удалении")
+                    });
+                }
+            }              
     };
 </script>

@@ -399,22 +399,23 @@ module.exports = {
     methods: {
         getPic: function getPic(index) {
             return '/uploads/' + this.photos[index].image;
+        },
+        deletePhoto: function deletePhoto(index) {
+            var data = this.photos[index].image;
+            console.log(data);
+            this.$http.get("/delete?photo=" + data, { bearer: true }).then(function (response) {
+                this.$router.push("/myphoto");
+            }).catch(function (response) {
+                console.log("Ошибка при удалении");
+            });
         }
-    },
-    deletePhoto: function deletePhoto() {
-        console.log(index);
-        this.$http.get("/delete", this.photos[index].image, { bearer: true }).then(function (response) {
-            this.$router.push("/myphoto");
-        }).catch(function (response) {
-            console.log(response);
-        });
     }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.user))]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.date.substring(0,10)))]),_vm._v(" "),_c('a',{staticClass:"del",on:{"click":function($event){_vm.$emit('deletePhoto($index)')}}},[_vm._v("Удалить")])])])}),0)])],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.user))]),_vm._v(" "),_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.date.substring(0,10)))]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('button',{staticClass:"btn btn-default btn-block",attrs:{"type":"button"},on:{"click":function($event){return _vm.deletePhoto($index)}}},[_vm._v("Удалить")])])])}),0)])],1)}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-53a85557"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
