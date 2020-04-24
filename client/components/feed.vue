@@ -6,7 +6,8 @@
     }
 
     .photo {
-        max-width: 800px;
+        transition: 1s; /* Время эффекта */
+        max-width: 1200px;
         margin-bottom: 50px;
     }
 
@@ -36,6 +37,24 @@
         justify-content: center;
         flex-wrap: wrap;
     }
+
+    .scale {
+        transition: 1s; /* Время эффекта */
+    }
+    .scale:active {
+        max-width: 1000px;
+    }
+    .photo:active {
+        max-width: 1200px;
+    }
+
+    .panel-footer
+    {
+        background-color:white;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 </style>
 
 <template>
@@ -54,7 +73,10 @@
                         </div>
                     </div>
                     <div class="panel-body">
-                        <img :src="getPic($index)" v-bind:alt="pic" class="photo_im">
+                        <img :src="getPic($index)" v-bind:alt="pic" class="photo_im scale">
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-default" v-on:click="deletePhoto($index)">Удалить</button>
                     </div>
                 </div>
             </div>
