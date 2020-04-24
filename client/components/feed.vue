@@ -12,7 +12,7 @@
     }
 
     .photo_im {
-        max-width: 500px;
+        max-width: 600px;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
@@ -52,8 +52,27 @@
     {
         background-color:white;
         display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .star {
+        width: 25px;
+    }
+    
+    .btn_star {
+        padding-left: 3px;
+        padding-right: 5px;
+        width: auto;
+        height: 33px;
+        display: flex;
         justify-content: center;
         flex-wrap: wrap;
+    }
+
+    .star_text {
+        font-size: 18px;
+        padding-left: 10px;
     }
 </style>
 
@@ -76,7 +95,26 @@
                         <img :src="getPic($index)" v-bind:alt="pic" class="photo_im scale">
                     </div>
                     <div class="panel-footer">
-                        <button type="button" class="btn btn-default" v-on:click="deletePhoto($index)">Удалить</button>
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 1)" disabled="photo['visible']">
+                            <img class="star" src="./1_star.jpg">
+                            <span class="star_text">{{ photo.star_1 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 2)" v-bind:disabled="!photo.visible">
+                            <img class="star" src="./2_star.jpg">
+                            <span class="star_text">{{ photo.star_2 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 3)" disabled="photo.visible">
+                            <img class="star" src="./3_star.jpg">
+                            <span class="star_text">{{ photo.star_3 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 4)" disabled="photo.visible">
+                            <img class="star" src="./4_star.jpg">
+                            <span class="star_text">{{ photo.star_4 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 5)" disabled="photo.visible">
+                            <img class="star" src="./5_star.jpg">
+                            <span class="star_text">{{ photo.star_5 }}</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -87,12 +125,28 @@
 <script>
     module.exports = {
             data: function() {
-                return { photos: [] };
+                return {  photos: [] };
             },
             mounted: function() {
                 this.$http.get("/feed", { bearer: true })
                 .then(function(response) {
-                    this.photos = response.body;
+                    let temp_photos = response.body;
+                    for (let i=0; i < temp_photos.length; i++){
+                        this.$http.get("/test_rate?image="+temp_photos[i].image, { bearer: true })
+                        .then(function(response) {
+                            if (response.body[0] != undefined) {
+                                console.log("dcd")
+                                temp_photos[i]["rate"] = response.body[0].rate;
+                                temp_photos[i]["visible"] = true;
+                            } else {
+                                                                console.log("dcccc")
+
+                                temp_photos[i]["visible"] = false;
+                            }
+                            
+                        });
+                    }
+                    this.photos = temp_photos
                 });
             },
         components: {
@@ -107,7 +161,13 @@
                 this.$http.get("/myphoto?name="+name, { bearer: true })
                 .then(function(response) {
                     this.photos = response.body;
-                });;
+                });
+            },
+            rate: function(index, number) {
+                this.$http.get("/rate?image="+this.photos[index].image+"&number="+number, { bearer: true })
+                .then(function(response) {
+                    window.location.reload();
+                });
             }
             }
     };

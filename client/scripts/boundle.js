@@ -266,7 +266,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
 },{"process/browser.js":2,"timers":3}],4:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".feed[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo[data-v-e8f73bc6] {\n    transition: 1s; /* Время эффекта */\n    max-width: 1200px;\n    margin-bottom: 50px;\n}\n\n.photo_im[data-v-e8f73bc6] {\n    max-width: 500px;\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo__header[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.btn[data-v-e8f73bc6] {\n    width: auto;\n    padding: 3px;\n    padding-left: 10px;\n    padding-right: 10px;\n    font-size: 15px;\n}\n\n.info[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.scale[data-v-e8f73bc6] {\n    transition: 1s; /* Время эффекта */\n}\n.scale[data-v-e8f73bc6]:active {\n    max-width: 1000px;\n}\n.photo[data-v-e8f73bc6]:active {\n    max-width: 1200px;\n}\n\n.panel-footer[data-v-e8f73bc6]\n{\n    background-color:white;\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".feed[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo[data-v-e8f73bc6] {\n    transition: 1s; /* Время эффекта */\n    max-width: 1200px;\n    margin-bottom: 50px;\n}\n\n.photo_im[data-v-e8f73bc6] {\n    max-width: 600px;\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo__header[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.btn[data-v-e8f73bc6] {\n    width: auto;\n    padding: 3px;\n    padding-left: 10px;\n    padding-right: 10px;\n    font-size: 15px;\n}\n\n.info[data-v-e8f73bc6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.scale[data-v-e8f73bc6] {\n    transition: 1s; /* Время эффекта */\n}\n.scale[data-v-e8f73bc6]:active {\n    max-width: 1000px;\n}\n.photo[data-v-e8f73bc6]:active {\n    max-width: 1200px;\n}\n\n.panel-footer[data-v-e8f73bc6]\n{\n    background-color:white;\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\n.star[data-v-e8f73bc6] {\n    width: 25px;\n}\n\n.btn_star[data-v-e8f73bc6] {\n    padding-left: 3px;\n    padding-right: 5px;\n    width: auto;\n    height: 33px;\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.star_text[data-v-e8f73bc6] {\n    font-size: 18px;\n    padding-left: 10px;\n}")
 ;(function(){
 "use strict";
 
@@ -276,7 +276,28 @@ module.exports = {
     },
     mounted: function mounted() {
         this.$http.get("/feed", { bearer: true }).then(function (response) {
-            this.photos = response.body;
+            var _this = this;
+
+            var temp_photos = response.body;
+
+            var _loop = function _loop(i) {
+                _this.$http.get("/test_rate?image=" + temp_photos[i].image, { bearer: true }).then(function (response) {
+                    if (response.body[0] != undefined) {
+                        console.log("dcd");
+                        temp_photos[i]["rate"] = response.body[0].rate;
+                        temp_photos[i]["visible"] = true;
+                    } else {
+                        console.log("dcccc");
+
+                        temp_photos[i]["visible"] = false;
+                    }
+                });
+            };
+
+            for (var i = 0; i < temp_photos.length; i++) {
+                _loop(i);
+            }
+            this.photos = temp_photos;
         });
     },
     components: {
@@ -290,7 +311,12 @@ module.exports = {
         show: function show(name) {
             this.$http.get("/myphoto?name=" + name, { bearer: true }).then(function (response) {
                 this.photos = response.body;
-            });;
+            });
+        },
+        rate: function rate(index, number) {
+            this.$http.get("/rate?image=" + this.photos[index].image + "&number=" + number, { bearer: true }).then(function (response) {
+                window.location.reload();
+            });
         }
     }
 };
@@ -298,7 +324,7 @@ module.exports = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('div',{staticClass:"info"},[_c('button',{staticClass:"btn btn-info btn-block",attrs:{"type":"button"},on:{"click":function($event){return _vm.show(photo.user)}}},[_vm._v(_vm._s(photo.user))])]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{staticClass:"photo_im scale",attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('button',{staticClass:"btn btn-default",attrs:{"type":"button"},on:{"click":function($event){return _vm.deletePhoto($index)}}},[_vm._v("Удалить")])])])}),0)])],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('div',{staticClass:"info"},[_c('button',{staticClass:"btn btn-info btn-block",attrs:{"type":"button"},on:{"click":function($event){return _vm.show(photo.user)}}},[_vm._v(_vm._s(photo.user))])]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{staticClass:"photo_im scale",attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('button',{staticClass:"btn btn_star btn-default",attrs:{"type":"button","disabled":"photo['visible']"},on:{"click":function($event){return _vm.rate($index, 1)}}},[_c('img',{staticClass:"star",attrs:{"src":"./1_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_1))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-default",attrs:{"type":"button","disabled":!photo.visible},on:{"click":function($event){return _vm.rate($index, 2)}}},[_c('img',{staticClass:"star",attrs:{"src":"./2_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_2))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-default",attrs:{"type":"button","disabled":"photo.visible"},on:{"click":function($event){return _vm.rate($index, 3)}}},[_c('img',{staticClass:"star",attrs:{"src":"./3_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_3))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-default",attrs:{"type":"button","disabled":"photo.visible"},on:{"click":function($event){return _vm.rate($index, 4)}}},[_c('img',{staticClass:"star",attrs:{"src":"./4_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_4))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-default",attrs:{"type":"button","disabled":"photo.visible"},on:{"click":function($event){return _vm.rate($index, 5)}}},[_c('img',{staticClass:"star",attrs:{"src":"./5_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_5))])])])])}),0)])],1)}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-e8f73bc6"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
@@ -382,7 +408,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"vue":26,"vue-hot-reload-api":20,"vueify/lib/insert-css":28}],7:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".feed[data-v-53a85557] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo[data-v-53a85557] {\n    max-width: 800px;\n    margin-bottom: 50px;\n}\n\n.photo__header[data-v-53a85557] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.photo img[data-v-53a85557] {\n    width: 100%;\n    height: 100%;\n}\n\n.panel-footer[data-v-53a85557]\n{\n    background-color: white;\n}\n.del[data-v-53a85557] {\n    margin: 0 0 0 620px;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".feed[data-v-53a85557] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.photo[data-v-53a85557] {\n    max-width: 800px;\n    margin-bottom: 50px;\n}\n\n.photo__header[data-v-53a85557] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.photo .panel-body img[data-v-53a85557] {\n    width: 100%;\n    height: 100%;\n}\n\n.panel-footer[data-v-53a85557]\n{\n    background-color:white;\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\n.star[data-v-53a85557] {\n    width: 25px;\n}\n\n.btn_star[data-v-53a85557] {\n    padding-left: 10px;\n    padding-right: 10px;\n    width: auto;\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n}\n\n.star_text[data-v-53a85557] {\n    font-size: 18px;\n    padding-left: 10px;\n}\n\n.del[data-v-53a85557] {\n    width: 200px;\n}")
 ;(function(){
 "use strict";
 
@@ -420,7 +446,7 @@ module.exports = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.user))]),_vm._v(" "),_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.date.substring(0,10)))]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('button',{staticClass:"btn btn-default",attrs:{"type":"button"},on:{"click":function($event){return _vm.deletePhoto($index)}}},[_vm._v("Удалить")])])])}),0)])],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"feed"},[_c('div',{staticClass:"feed__row"},_vm._l((_vm.photos),function(photo,$index){return _c('div',{staticClass:"photo panel panel-default"},[_c('div',{staticClass:"panel-heading"},[_c('div',{staticClass:"photo__header"},[_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.user))]),_vm._v(" "),_c('span',{staticClass:"panel-title"},[_vm._v(_vm._s(photo.date.substring(0,10)))]),_vm._v(" "),_c('span',{staticClass:"glyphicon glyphicon-user"})])]),_vm._v(" "),_c('div',{staticClass:"panel-body"},[_c('img',{attrs:{"src":_vm.getPic($index),"alt":_vm.pic}})]),_vm._v(" "),_c('div',{staticClass:"panel-footer"},[_c('button',{staticClass:"btn btn-danger del",attrs:{"type":"button"},on:{"click":function($event){return _vm.deletePhoto($index)}}},[_vm._v("Удалить")]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-success",attrs:{"type":"button","disabled":""}},[_c('img',{staticClass:"star",attrs:{"src":"./1_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_1))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-success",attrs:{"type":"button","disabled":""}},[_c('img',{staticClass:"star",attrs:{"src":"./2_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_2))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-success",attrs:{"type":"button","disabled":""}},[_c('img',{staticClass:"star",attrs:{"src":"./3_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_3))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-success",attrs:{"type":"button","disabled":""}},[_c('img',{staticClass:"star",attrs:{"src":"./4_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_4))])]),_vm._v(" "),_c('button',{staticClass:"btn btn_star btn-success   ",attrs:{"type":"button","disabled":""}},[_c('img',{staticClass:"star",attrs:{"src":"./5_star.jpg"}}),_vm._v(" "),_c('span',{staticClass:"star_text"},[_vm._v(_vm._s(photo.star_5))])])])])}),0)])],1)}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-53a85557"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")

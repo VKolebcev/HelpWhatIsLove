@@ -16,18 +16,41 @@
         align-items: center;
     }
 
-    .photo img {
+    .photo .panel-body img {
         width: 100%;
         height: 100%;
     }
 
     .panel-footer
     {
-        background-color: white;
+        background-color:white;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
     }
+
+    .star {
+        width: 25px;
+    }
+    
+    .btn_star {
+        padding-left: 10px;
+        padding-right: 10px;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .star_text {
+        font-size: 18px;
+        padding-left: 10px;
+    }
+
     .del {
-        margin: 0 0 0 620px;
+        width: 200px;
     }
+    
 </style>
 
 <template>
@@ -48,7 +71,27 @@
                         <img :src="getPic($index)" v-bind:alt="pic">
                     </div>
                     <div class="panel-footer">
-                        <button type="button" class="btn btn-default" v-on:click="deletePhoto($index)">Удалить</button>
+                        <button type="button" class="btn btn-danger del" v-on:click="deletePhoto($index)">Удалить</button>
+                        <button type="button" class="btn btn_star btn-success" disabled>
+                            <img class="star" src="./1_star.jpg">
+                            <span class="star_text">{{ photo.star_1 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-success" disabled>
+                            <img class="star" src="./2_star.jpg">
+                            <span class="star_text">{{ photo.star_2 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-success" disabled>
+                            <img class="star" src="./3_star.jpg">
+                            <span class="star_text">{{ photo.star_3 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-success" disabled>
+                            <img class="star" src="./4_star.jpg">
+                            <span class="star_text">{{ photo.star_4 }}</span>
+                        </button>
+                        <button type="button" class="btn btn_star btn-success   " disabled>
+                            <img class="star" src="./5_star.jpg">
+                            <span class="star_text">{{ photo.star_5 }}</span>
+                        </button>
                     </div>
                 </div>
             </div>

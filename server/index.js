@@ -25,6 +25,11 @@ app.post("/upload", [vjmServer.jwtProtector, upload.single("image")],
         database.collection("uploads").insert({
             user: request.user.username,
             image: request.file.filename,
+            star_1: 0,
+            star_2: 0,
+            star_3: 0,
+            star_4: 0,
+            star_5: 0,
             date: new Date()
         });
         response.sendStatus(200);
@@ -43,14 +48,12 @@ app.get("/myphoto", vjmServer.jwtProtector, function(request, response) {
     if (request.query.name != null) {
         database.collection("uploads").find( { user: request.query.name })
         .sort({ date: -1 })
-        .limit(10)
         .toArray(function(err, documents) {
             response.json(documents);
         });
     } else {
         database.collection("uploads").find( { user: request.user.username })
         .sort({ date: -1 })
-        .limit(10)
         .toArray(function(err, documents) {
             response.json(documents);
         });
@@ -59,9 +62,72 @@ app.get("/myphoto", vjmServer.jwtProtector, function(request, response) {
 
 app.get("/delete", vjmServer.jwtProtector, function(request, response) {
     database.collection("uploads").deleteOne( { image: request.query.photo }, function(err, obj) {
-    if (err) throw err;
-    });
+    if (err) throw err; });
     response.sendStatus(200);
+});
+
+app.get("/test_rate", vjmServer.jwtProtector, function(request, response) {
+    database.collection("rating").find( { image: request.query.image } )
+    .toArray(function(err, documents) {
+        response.json(documents);
+    });
+});
+
+app.get("/rate", vjmServer.jwtProtector, function(request, response) {
+    if (request.query.number == 1) {
+        database.collection("uploads").find( { image: request.query.image })
+        .toArray(function(err, documents) {
+        database.collection("uploads")
+        .updateOne({ image: request.query.image }, 
+            { $set: {star_1: Number(documents[0].star_1) + 1 } }, 
+            function(err, res) {  if (err) throw err; });
+        });
+    }
+    if (request.query.number == 2) {
+        database.collection("uploads").find( { image: request.query.image })
+        .toArray(function(err, documents) {
+        database.collection("uploads")
+        .updateOne({ image: request.query.image }, 
+            { $set: {star_2: Number(documents[0].star_2) + 1 } }, 
+            function(err, res) {  if (err) throw err; });
+        });
+    } 
+    if (request.query.number == 3) {
+        database.collection("uploads").find( { image: request.query.image })
+        .toArray(function(err, documents) {
+        database.collection("uploads")
+        .updateOne({ image: request.query.image }, 
+            { $set: {star_3: Number(documents[0].star_3) + 1 } }, 
+            function(err, res) {  if (err) throw err; });
+        });
+    }
+    if (request.query.number == 4) {
+        database.collection("uploads").find( { image: request.query.image })
+        .toArray(function(err, documents) {
+        database.collection("uploads")
+        .updateOne({ image: request.query.image }, 
+            { $set: {star_4: Number(documents[0].star_4) + 1 } }, 
+            function(err, res) {  if (err) throw err; });
+        });
+    }
+    if (request.query.number == 5) {
+        database.collection("uploads").find( { image: request.query.image })
+        .toArray(function(err, documents) {
+        database.collection("uploads")
+        .updateOne({ image: request.query.image }, 
+            { $set: {star_5: Number(documents[0].star_5) + 1 } }, 
+            function(err, res) {  if (err) throw err; });
+        });
+    }
+
+    database.collection("rating").insert({
+        user: request.user.username,
+        image: request.query.image,
+        rate: request.query.number
+    });
+
+    response.sendStatus(200);
+
 });
 
 mongoClient.connect(mongoUrl, function(err, db) {
