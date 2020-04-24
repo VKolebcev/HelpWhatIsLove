@@ -14,6 +14,14 @@
         height: 100%;
         padding: 5px;
     }
+    span {
+        font-size: 10px;
+        margin: 5px;
+    }
+
+    .danger {
+        color: red;
+    }
 </style>
 
 <template>
@@ -22,15 +30,17 @@
         <navigation></navigation>
         <div class="focus">
             <div class="focus__holder">
-                <img v-bind:src="image">
+                <img id="img" v-bind:src="image">
                 <form v-on:submit.prevent="upload">
                     <label class="btn btn-default btn-file">Выбрать...
-                        <input type="file" accept="image/*"
-                            name="image" v-on:change="preview">
+                        <input type="file" id="file" accept="image/x-png,image/gif,image/jpeg"
+                            name="image" >
                     </label>
-                    <button type="submit" class="btn btn-default"
+                    <button type="submit" class="btn btn-default submit"
                         v-bind:disabled="!previewed">Загрузить!</button>
                 </form>
+                <span>Файл должен быть загружен в формате *.png, *.gif, *.jpeg</span>
+                <span>Максимальный размр загружаемоего файла 2 Мб</span>
             </div>
         </div>
     </div>
@@ -44,19 +54,30 @@
                 previewed: false
             };
         },
-        methods: {
-            preview: function(event) {
-                let files = event.target.files;
-                if(files.length > 0) {
-                    let self = this;
-                    let reader = new FileReader();
-                    reader.onload = function(readerEvent) {
-                        self.image = readerEvent.target.result;
-                        self.previewed = true;
-                    };
+        mounted: function() {
+            const $ = require('jquery');
+            let uploadField = document.getElementById("file");
+
+            uploadField.onchange = function(event) {
+                if(this.files[0].size > 16777216){
+                alert("Размер файла привышает 2 Мб!");
+                $('span').addClass('danger');
+                this.value = "";
+                this.previewed = false; 
+                } else {
+                    let files = event.target.files;
+                    if(files.length > 0) {
+                        let reader = new FileReader();
+                        reader.onload = function(readerEvent) {
+                            $("#img").attr("src",readerEvent.target.result);
+                            $(".submit").prop("disabled", false);
+                        };
                     reader.readAsDataURL(files[0]);
+                    }
                 }
-            },
+            };
+        },
+        methods: {
             upload: function(event) {
                 let data = new FormData(event.target);
                 this.$http.post("/upload", data, { bearer: true })

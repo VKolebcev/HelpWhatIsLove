@@ -577,7 +577,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"vue":26,"vue-hot-reload-api":20}],11:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("input[type=\"file\"][data-v-43adf980] {\n    display: none;\n}\n\nform[data-v-43adf980] {\n    width: 100%;\n    display: flex;\n    justify-content: space-between;\n}\n\nimg[data-v-43adf980] {\n    width: 100%;\n    height: 100%;\n    padding: 5px;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("input[type=\"file\"][data-v-43adf980] {\n    display: none;\n}\n\nform[data-v-43adf980] {\n    width: 100%;\n    display: flex;\n    justify-content: space-between;\n}\n\nimg[data-v-43adf980] {\n    width: 100%;\n    height: 100%;\n    padding: 5px;\n}\nspan[data-v-43adf980] {\n    font-size: 10px;\n    margin: 5px;\n}\n\n.danger[data-v-43adf980] {\n    color: red;\n}")
 ;(function(){
 "use strict";
 
@@ -588,19 +588,30 @@ module.exports = {
             previewed: false
         };
     },
-    methods: {
-        preview: function preview(event) {
-            var files = event.target.files;
-            if (files.length > 0) {
-                var self = this;
-                var reader = new FileReader();
-                reader.onload = function (readerEvent) {
-                    self.image = readerEvent.target.result;
-                    self.previewed = true;
-                };
-                reader.readAsDataURL(files[0]);
+    mounted: function mounted() {
+        var $ = require('jquery');
+        var uploadField = document.getElementById("file");
+
+        uploadField.onchange = function (event) {
+            if (this.files[0].size > 16777216) {
+                alert("Размер файла привышает 2 Мб!");
+                $('span').addClass('danger');
+                this.value = "";
+                this.previewed = false;
+            } else {
+                var files = event.target.files;
+                if (files.length > 0) {
+                    var reader = new FileReader();
+                    reader.onload = function (readerEvent) {
+                        $("#img").attr("src", readerEvent.target.result);
+                        $(".submit").prop("disabled", false);
+                    };
+                    reader.readAsDataURL(files[0]);
+                }
             }
-        },
+        };
+    },
+    methods: {
         upload: function upload(event) {
             var data = new FormData(event.target);
             this.$http.post("/upload", data, { bearer: true }).then(function () {
@@ -617,8 +628,8 @@ module.exports = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"focus"},[_c('div',{staticClass:"focus__holder"},[_c('img',{attrs:{"src":_vm.image}}),_vm._v(" "),_c('form',{on:{"submit":function($event){$event.preventDefault();return _vm.upload($event)}}},[_c('label',{staticClass:"btn btn-default btn-file"},[_vm._v("Выбрать...\n                    "),_c('input',{attrs:{"type":"file","accept":"image/*","name":"image"},on:{"change":_vm.preview}})]),_vm._v(" "),_c('button',{staticClass:"btn btn-default",attrs:{"type":"submit","disabled":!_vm.previewed}},[_vm._v("Загрузить!")])])])])],1)}
-__vue__options__.staticRenderFns = []
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('test'),_vm._v(" "),_c('navigation'),_vm._v(" "),_c('div',{staticClass:"focus"},[_c('div',{staticClass:"focus__holder"},[_c('img',{attrs:{"id":"img","src":_vm.image}}),_vm._v(" "),_c('form',{on:{"submit":function($event){$event.preventDefault();return _vm.upload($event)}}},[_vm._m(0),_vm._v(" "),_c('button',{staticClass:"btn btn-default submit",attrs:{"type":"submit","disabled":!_vm.previewed}},[_vm._v("Загрузить!")])]),_vm._v(" "),_c('span',[_vm._v("Файл должен быть загружен в формате *.png, *.gif, *.jpeg")]),_vm._v(" "),_c('span',[_vm._v("Максимальный размр загружаемоего файла 2 Мб")])])])],1)}
+__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"btn btn-default btn-file"},[_vm._v("Выбрать...\n                    "),_c('input',{attrs:{"type":"file","id":"file","accept":"image/x-png,image/gif,image/jpeg","name":"image"}})])}]
 __vue__options__._scopeId = "data-v-43adf980"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -631,7 +642,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-43adf980", __vue__options__)
   }
 })()}
-},{"./navigation.vue":8,"./test.vue":10,"vue":26,"vue-hot-reload-api":20,"vueify/lib/insert-css":28}],12:[function(require,module,exports){
+},{"./navigation.vue":8,"./test.vue":10,"jquery":14,"vue":26,"vue-hot-reload-api":20,"vueify/lib/insert-css":28}],12:[function(require,module,exports){
 const Vue = require('vue/dist/vue.js');
 const VueResource = require('vue-resource');
 const VueRouter = require('vue-router');
