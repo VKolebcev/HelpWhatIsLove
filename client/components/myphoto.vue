@@ -48,7 +48,7 @@
                         <img :src="getPic($index)" v-bind:alt="pic">
                     </div>
                     <div class="panel-footer">
-                        <button type="button" class="btn btn-default btn-block" v-on:click="deletePhoto($index)">Удалить</button>
+                        <button type="button" class="btn btn-default" v-on:click="deletePhoto($index)">Удалить</button>
                     </div>
                 </div>
             </div>

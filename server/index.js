@@ -40,13 +40,21 @@ app.get("/feed", vjmServer.jwtProtector, function(request, response) {
 });
 
 app.get("/myphoto", vjmServer.jwtProtector, function(request, response) {
-    console.log(request.query.user);
-    database.collection("uploads").find( { user: request.user.username })
-    .sort({ date: -1 })
-    .limit(10)
-    .toArray(function(err, documents) {
-        response.json(documents);
-    });
+    if (request.query.name != null) {
+        database.collection("uploads").find( { user: request.query.name })
+        .sort({ date: -1 })
+        .limit(10)
+        .toArray(function(err, documents) {
+            response.json(documents);
+        });
+    } else {
+        database.collection("uploads").find( { user: request.user.username })
+        .sort({ date: -1 })
+        .limit(10)
+        .toArray(function(err, documents) {
+            response.json(documents);
+        });
+    }
 });
 
 app.get("/delete", vjmServer.jwtProtector, function(request, response) {
