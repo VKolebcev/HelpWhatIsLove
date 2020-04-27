@@ -130,6 +130,34 @@ app.get("/rate", vjmServer.jwtProtector, function(request, response) {
 
 });
 
+app.get("/complain", vjmServer.jwtProtector, function(request, response) {
+    database.collection("uploads").updateOne({ image: request.query.image }, 
+        { $set: { complain: 1 } }, 
+        function(err, res) {  if (err) throw err; });
+    response.sendStatus(200);
+});
+
+app.get("/is_moderator", vjmServer.jwtProtector, function(request, response) {
+    database.collection("users").find( { username: request.user.username }).toArray(function(err, documents) {
+        response.json(documents);
+    });
+});
+
+app.get("/moderation", vjmServer.jwtProtector, function(request, response) {
+    database.collection("uploads").find( { complain: 1 })
+    .sort({ date: -1 })
+    .toArray(function(err, documents) {
+        response.json(documents);
+    });
+});
+
+app.get("/keep", vjmServer.jwtProtector, function(request, response) {
+    database.collection("uploads").updateOne({ image: request.query.photo }, 
+        { $set: { complain: 0 } }, 
+        function(err, res) {  if (err) throw err; });
+    response.sendStatus(200);
+});
+
 mongoClient.connect(mongoUrl, function(err, db) {
     if (err) console.log(err.stack);
     database = db;

@@ -72,26 +72,7 @@
                     </div>
                     <div class="panel-footer">
                         <button type="button" class="btn btn-danger del" v-on:click="deletePhoto($index)">Удалить</button>
-                        <button type="button" class="btn btn_star btn-success" disabled>
-                            <img class="star" src="./1_star.jpg">
-                            <span class="star_text">{{ photo.star_1 }}</span>
-                        </button>
-                        <button type="button" class="btn btn_star btn-success" disabled>
-                            <img class="star" src="./2_star.jpg">
-                            <span class="star_text">{{ photo.star_2 }}</span>
-                        </button>
-                        <button type="button" class="btn btn_star btn-success" disabled>
-                            <img class="star" src="./3_star.jpg">
-                            <span class="star_text">{{ photo.star_3 }}</span>
-                        </button>
-                        <button type="button" class="btn btn_star btn-success" disabled>
-                            <img class="star" src="./4_star.jpg">
-                            <span class="star_text">{{ photo.star_4 }}</span>
-                        </button>
-                        <button type="button" class="btn btn_star btn-success" disabled>
-                            <img class="star" src="./5_star.jpg">
-                            <span class="star_text">{{ photo.star_5 }}</span>
-                        </button>
+                        <button type="button" class="btn btn-success del" v-on:click="keepPhoto($index)">Корректное фото</button>
                     </div>
                 </div>
             </div>
@@ -107,7 +88,7 @@
                 };
             },
             mounted: function() {
-                this.$http.get("/myphoto", { bearer: true })
+                this.$http.get("/moderation", { bearer: true })
                 .then(function(response) {
                     this.photos = response.body;
                 });
@@ -122,12 +103,20 @@
                     },
                 deletePhoto: function(index) {
                     let data = this.photos[index].image;
-                    console.log(data);
                     this.$http.get("/delete?photo="+data, { bearer: true })
                     .then(function(response) {
                         this.$router.push("/myphoto");
                     }).catch(function(response) {
                         console.log("Ошибка при удалении")
+                    });
+                },
+                keepPhoto: function(index) {
+                    let data = this.photos[index].image;
+                    this.$http.get("/keep?photo="+data, { bearer: true })
+                    .then(function(response) {
+                        this.$router.push("/feed");
+                    }).catch(function(response) {
+                        console.log("Ошибка. Подробности в консоли сервера")
                     });
                 }
             }              

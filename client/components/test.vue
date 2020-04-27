@@ -6,7 +6,7 @@
 
 <script>
     module.exports = {
-        mounted: function() {
+        mounted: function() {          
             if(!this.$auth.isLoggedIn()) {
                 this.$router.push("/login");
             }

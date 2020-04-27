@@ -94,26 +94,29 @@
                     <div class="panel-body">
                         <img :src="getPic($index)" v-bind:alt="pic" class="photo_im scale">
                     </div>
-                    <div class="panel-footer">
-                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 1)" disabled="photo['visible']">
+                    <div class="panel-footer" v-bind:disabled="false">
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 1)">
                             <img class="star" src="./1_star.jpg">
                             <span class="star_text">{{ photo.star_1 }}</span>
                         </button>
-                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 2)" v-bind:disabled="!photo.visible">
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 2)">
                             <img class="star" src="./2_star.jpg">
                             <span class="star_text">{{ photo.star_2 }}</span>
                         </button>
-                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 3)" disabled="photo.visible">
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 3)">
                             <img class="star" src="./3_star.jpg">
                             <span class="star_text">{{ photo.star_3 }}</span>
                         </button>
-                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 4)" disabled="photo.visible">
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 4)">
                             <img class="star" src="./4_star.jpg">
                             <span class="star_text">{{ photo.star_4 }}</span>
                         </button>
-                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 5)" disabled="photo.visible">
+                        <button type="button" class="btn btn_star btn-default" v-on:click="rate($index, 5)">
                             <img class="star" src="./5_star.jpg">
                             <span class="star_text">{{ photo.star_5 }}</span>
+                        </button>
+                        <button type="button" class="btn btn-danger" v-on:click="complain($index)">
+                            <span>Жалоба</span>
                         </button>
                     </div>
                 </div>
@@ -135,12 +138,9 @@
                         this.$http.get("/test_rate?image="+temp_photos[i].image, { bearer: true })
                         .then(function(response) {
                             if (response.body[0] != undefined) {
-                                console.log("dcd")
                                 temp_photos[i]["rate"] = response.body[0].rate;
                                 temp_photos[i]["visible"] = true;
                             } else {
-                                                                console.log("dcccc")
-
                                 temp_photos[i]["visible"] = false;
                             }
                             
@@ -167,6 +167,12 @@
                 this.$http.get("/rate?image="+this.photos[index].image+"&number="+number, { bearer: true })
                 .then(function(response) {
                     window.location.reload();
+                });
+            },
+            complain: function(index) {
+                this.$http.get("/complain?image="+this.photos[index].image, { bearer: true })
+                .then(function(response) {
+                    alert("Жалоба успешно отправлена")
                 });
             }
             }

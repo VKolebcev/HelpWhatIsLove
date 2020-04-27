@@ -9,6 +9,7 @@ let Login = require("../components/login.vue");
 let Feed = require("../components/feed.vue");
 let Upload = require("../components/upload.vue");
 let MyPhoto = require("../components/myphoto.vue");
+let Moderation = require("../components/moderation.vue");
 
 Vue.use(VueResource);
 Vue.use(VueJwtMongo.Client);
@@ -21,7 +22,8 @@ let router = new VueRouter({
         { path: "/login", component: Login},
         { path: "/feed", component: Feed},
         { path: "/upload", component: Upload},
-        { path: "/myphoto", component: MyPhoto}
+        { path: "/myphoto", component: MyPhoto},
+        { path: "/moderation", component: Moderation}
     ]
 });
 
